@@ -1,10 +1,17 @@
 QMainWindow {
-    background-color: #181831;
+    background-color: #121226;
 }
 
 QLabel {
     color: #505077;
     /* font-size: 24px; */
+    font-weight: bold;
+}
+
+QLabel#stockItem {
+    background-color: #21213B;
+    color: #505077;
+    border-radius: 15px;
     font-weight: bold;
 }
 
@@ -14,6 +21,7 @@ QLineEdit {
     border: none;
     background-color: #21213B;
     color: #505077;
+    font-weight: 400;
 }
 
 QLineEdit::add-action {
@@ -28,4 +36,18 @@ QListView {
 
 QHBoxLayout {
     background-color: #181831;
+}
+
+QPushButton#stockItemDelete {
+    font-size: 8px;
+    color: #21213B;
+    background-color: #505077;
+    border-radius: 6px;  /* Rounded corners */
+    text-align: center;  /* Center the text horizontally */
+}
+
+QPushButton#stockItemDelete::hover {
+    /* border-radius: 15px; */
+    background-color: red;
+    color: white;
 }
