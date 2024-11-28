@@ -4,7 +4,15 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCompleter, QLabel, QHBoxLayout, QPushButton, QDateEdit
 )
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QProcess
+
+from nodeeditor.node_editor_window import NodeEditorWindow
+
+
+class NodeEditorMainWindow(NodeEditorWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Node Editor")
 
 
 class MainWindow(QMainWindow):
@@ -27,6 +35,7 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(20, 20, 20, 20)  # Padding around the layout
         main_layout.setSpacing(15)  # Space that is between widgets
 
+
         ### TITLE AND RUN/STOP
         self.run_manager = QHBoxLayout(objectName="runManager")
         # self.run_manager.setSpacing(0)
@@ -34,8 +43,8 @@ class MainWindow(QMainWindow):
         self.run_manager.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
         title = QLabel("QUANTSOC <span style=''>≽ܫ≼</span> \
                        TRADER <span style='font-size: 12px;'>v0.0.1</span>", objectName="programTitle")
-        play_button = QPushButton("▶", objectName="runEngineButton")
-        stop_button = QPushButton("■", objectName="stopEngineButton")   
+        play_button = QPushButton("▶", objectName="runEngineButton", toolTip="Start")
+        stop_button = QPushButton("■", objectName="stopEngineButton", toolTip="Stop")   
         self.run_manager.addWidget(title, alignment=Qt.AlignmentFlag.AlignLeft)
         self.run_manager.addStretch()
         self.run_manager.addWidget(play_button)
@@ -99,7 +108,7 @@ class MainWindow(QMainWindow):
         self.time_manager.addWidget(date_arrow)
         self.time_manager.addWidget(ending_date)
 
-        
+
 
         ### GUI ELEMENT FOR MANAGING STRATEGY
         self.strategy_manager = QHBoxLayout()
@@ -123,6 +132,7 @@ class MainWindow(QMainWindow):
         add_button = QPushButton("+", objectName="addStrategyButton")
         add_button.setFixedSize(30,30)
         fullscreen_button = QPushButton("⛶", objectName="modifyStrategyButton")
+        fullscreen_button.clicked.connect(self.open_node_editor)  # Connect button to the method
         fullscreen_button.setFixedSize(30,30)
 
         self.strategy_manager.addWidget(add_button)
@@ -147,6 +157,11 @@ class MainWindow(QMainWindow):
         container.setLayout(main_layout)
 
         self.setCentralWidget(container)
+
+    def open_node_editor(self):
+        """Opens the Node Editor window."""
+        self.node_editor_window = NodeEditorMainWindow()
+        self.node_editor_window.show()
 
     def load_stock_data(self):
         """Load stock data from a JSON file and set up the completer."""
