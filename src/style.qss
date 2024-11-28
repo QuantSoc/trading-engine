@@ -51,3 +51,81 @@ QPushButton#stockItemDelete::hover {
     background-color: red;
     color: white;
 }
+
+QDateEdit {
+    padding: 0px 0px 0px 0px;  /* Adjust padding to make space for the icon */
+    padding-right: 5px;
+    height: 30px;
+    border: none;
+    background-color: #181831;
+    color: #505077;
+    font-weight: 400;
+}
+
+QDateEdit::drop-down {
+    border: none;
+    padding-left: 5px;  /* Move dropdown left */
+    width: 20px;        /* Adjust width if necessary */
+    subcontrol-position: left; /* Align dropdown on the left */
+}
+
+QDateEdit::down-arrow {
+    image: url("./src/assets/calendar-icon.svg");
+    width: 16px;
+    height: 16px;
+    margin-right: 7px;  /* Adds space for text padding */
+}
+
+QDateEdit::down-arrow:hover {
+    image: url("./src/assets/calendar-icon-hover.svg");
+    width: 16px;
+    height: 16px;
+}
+
+
+QPushButton#modifyStrategyButton, QPushButton#addStrategyButton {
+    background-color: #181831;
+    color: #505077;
+    font-size: 24px;
+    font-weight: 400;
+    text-align: center;
+    padding-bottom: 3px;
+    padding-left: 1px;
+    border:none;
+    border-radius: 5px;
+}
+
+QPushButton#modifyStrategyButton:hover, QPushButton#addStrategyButton:hover {
+    background-color: #21213B;
+    color: green;
+}
+
+QPushButton#runEngineButton, QPushButton#stopEngineButton {
+    background-color: none;
+    border: none;
+    font-size: 40px;
+    font-weight:400px;
+}
+
+QPushButton#runEngineButton {
+    color: green;
+}
+
+QPushButton#stopEngineButton {
+    color: red;
+    padding-bottom: 10px;
+
+}
+
+QPushButton#runEngineButton::hover {
+    color: green;
+}
+
+QPushButton#stopEngineButton::hover {
+    color: red;
+}
+
+QLabel#programTitle {
+    color: #505077;
+    font-size: 25px;
+}

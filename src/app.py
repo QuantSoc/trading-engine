@@ -1,7 +1,7 @@
 import sys
 import json
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCompleter, QLabel, QHBoxLayout, QPushButton, QComboBox, QAction
+    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCompleter, QLabel, QHBoxLayout, QPushButton, QDateEdit
 )
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
@@ -11,13 +11,14 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Stock Ticker Selector")
+        self.setWindowTitle("QuantSoc Shorthair Trader")
         self.setGeometry(100, 100, 960, 580)
 
         self.ticker_list = []       # List to store selected tickers
         self.ticker_widgets = []    # List to store the ticker widgets for removal
         self.mediary = "default"
-        self.mediary_list = ["Simulated", "Unsimulated"] # could add mediaries that require keys and other shit
+        self.mediary_options = ["Simulated", "Unsimulated"] # could add mediaries that require keys and other shit
+        self.strategy_options = ["Default"]
 
         self.initUI()
 
@@ -26,7 +27,23 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(20, 20, 20, 20)  # Padding around the layout
         main_layout.setSpacing(15)  # Space that is between widgets
 
-        # THIS GUI ELEMENT IS FOR MANAGING TICKERS
+        ### TITLE AND RUN/STOP
+        self.run_manager = QHBoxLayout(objectName="runManager")
+        # self.run_manager.setSpacing(0)
+        self.run_manager.setContentsMargins(0, 0, 0, 0)  # (left, top, right, bottom)  # Space between the search bar and the stock label
+        self.run_manager.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+        title = QLabel("QUANTSOC <span style=''>≽ܫ≼</span> \
+                       TRADER <span style='font-size: 12px;'>v0.0.1</span>", objectName="programTitle")
+        play_button = QPushButton("▶", objectName="runEngineButton")
+        stop_button = QPushButton("■", objectName="stopEngineButton")   
+        self.run_manager.addWidget(title, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.run_manager.addStretch()
+        self.run_manager.addWidget(play_button)
+        self.run_manager.addWidget(stop_button)
+
+
+
+        ### GUI ELEMENT FOR MANAGING TICKERS
         self.ticker_manager = QHBoxLayout() # Horizontal layout for search bar and stock label
         self.ticker_manager.setSpacing(10)  # Space between the search bar and the stock label
         self.ticker_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
@@ -42,7 +59,7 @@ class MainWindow(QMainWindow):
         self.ticker_manager.addWidget(self.ticker_search_bar)
 
 
-        # GUI ELEMENT FOR MANAGING MEDIARIES
+        ### GUI ELEMENT FOR MANAGING MEDIARIES
         self.mediary_manager = QHBoxLayout()
         self.mediary_manager.setSpacing(10)  # Space between the search bar and the stock label
         self.mediary_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
@@ -51,7 +68,7 @@ class MainWindow(QMainWindow):
         self.mediary_search_bar.setPlaceholderText("Select Mediary...")
         self.mediary_search_bar.setMaximumWidth(300)
         # COMPLETER for selecting mediary
-        completer = QCompleter(self.mediary_list, self)
+        completer = QCompleter(self.mediary_options, self)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)  # Show all items when the search bar is empty
         self.mediary_search_bar.setCompleter(completer)
@@ -67,16 +84,60 @@ class MainWindow(QMainWindow):
         self.mediary_key_input.addAction(search_icon, QLineEdit.LeadingPosition)
         self.mediary_manager.addWidget(self.mediary_key_input)
 
-        # TODO GUI ELEMENT FOR MANAGING INTERVAL
 
-        # TODO GUI ELEMENT FOR MANAGING DATES
+
+        ### GUI ELEMENT FOR MANAGING DATES
+        self.time_manager = QHBoxLayout()
+        self.time_manager.setSpacing(10)  # Space between the search bar and the stock label
+        self.time_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
+        starting_date = QDateEdit(calendarPopup=True)
+        starting_date.setMaximumWidth(200)
+        date_arrow = QLabel("🠊")
+        ending_date = QDateEdit(calendarPopup=True)
+        ending_date.setMaximumWidth(200)
+        self.time_manager.addWidget(starting_date)
+        self.time_manager.addWidget(date_arrow)
+        self.time_manager.addWidget(ending_date)
+
+        
+
+        ### GUI ELEMENT FOR MANAGING STRATEGY
+        self.strategy_manager = QHBoxLayout()
+        self.strategy_manager.setContentsMargins(0, 0, 0, 0)
+        self.time_manager.setSpacing(0)  # Space between the search bar and the stock label
+        self.strategy_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
+        # SEARCH for selecting the strategy
+        self.strategy_search_bar = QLineEdit(self)
+        self.strategy_search_bar.setPlaceholderText("Select Strategy...")
+        self.strategy_search_bar.setMaximumWidth(300)
+        # COMPLETER for selecting strategy
+        completer = QCompleter(self.strategy_options, self)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)  # Show all items when the search bar is empty
+        self.strategy_search_bar.setCompleter(completer)
+        # ICON for selecting strategy
+        search_icon = QIcon("src/assets/strategy-icon.svg")
+        self.strategy_search_bar.addAction(search_icon, QLineEdit.LeadingPosition)
+        self.strategy_manager.addWidget(self.strategy_search_bar)
+        # ADD button for new strategy
+        add_button = QPushButton("+", objectName="addStrategyButton")
+        add_button.setFixedSize(30,30)
+        fullscreen_button = QPushButton("⛶", objectName="modifyStrategyButton")
+        fullscreen_button.setFixedSize(30,30)
+
+        self.strategy_manager.addWidget(add_button)
+        self.strategy_manager.addWidget(fullscreen_button)
+
 
 
         # Add each of the elements to the the windows main layout
+        main_layout.addLayout(self.run_manager)
         main_layout.addLayout(self.ticker_manager)
         main_layout.addLayout(self.mediary_manager)
-        main_layout.addStretch()
+        main_layout.addLayout(self.time_manager)
+        main_layout.addLayout(self.strategy_manager)
 
+        main_layout.addStretch()
 
         # Load stock data and set up the completer
         self.load_stock_data()
