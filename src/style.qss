@@ -19,7 +19,7 @@ QLineEdit {
     padding: 0px 0px 0px 7px;  /* Adjust for the icon */
     height: 30px;
     border: none;
-    background-color: #21213B;
+    background-color: #181831;
     color: #505077;
     font-weight: 400;
 }
