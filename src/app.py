@@ -1,7 +1,7 @@
 import sys
 import json
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCompleter, QLabel, QHBoxLayout, QPushButton
+    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCompleter, QLabel, QHBoxLayout, QPushButton, QComboBox, QAction
 )
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QSize
@@ -16,32 +16,67 @@ class MainWindow(QMainWindow):
 
         self.ticker_list = []       # List to store selected tickers
         self.ticker_widgets = []    # List to store the ticker widgets for removal
+        self.mediary = "default"
+        self.mediary_list = ["Simulated", "Unsimulated"] # could add mediaries that require keys and other shit
 
         self.initUI()
 
     def initUI(self):
         main_layout = QVBoxLayout()  # Vertical layout for the overall window
         main_layout.setContentsMargins(20, 20, 20, 20)  # Padding around the layout
-        main_layout.setSpacing(10)  # Space that is between widgets
-
+        main_layout.setSpacing(15)  # Space that is between widgets
 
         # THIS GUI ELEMENT IS FOR MANAGING TICKERS
         self.ticker_manager = QHBoxLayout() # Horizontal layout for search bar and stock label
         self.ticker_manager.setSpacing(10)  # Space between the search bar and the stock label
         self.ticker_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
         # Search bar for finding tickers
-        self.search_bar = QLineEdit(self)
-        self.search_bar.setPlaceholderText("Search Tickers...")
-        self.search_bar.setMaximumWidth(300)
+        self.ticker_search_bar = QLineEdit(self)
+        self.ticker_search_bar.setPlaceholderText("Search Tickers...")
+        self.ticker_search_bar.setMaximumWidth(300)
         # Search icon to the left of the ticker 
         search_icon = QIcon("src/assets/search-icon.svg")
-        self.search_bar.addAction(search_icon, QLineEdit.LeadingPosition)
+        self.ticker_search_bar.addAction(search_icon, QLineEdit.LeadingPosition)
+        # Add the search bar to the ticker manager layout
+        # NOTE the ticker icons are added to the GUI in the add_ticker_to_list function
+        self.ticker_manager.addWidget(self.ticker_search_bar)
 
-        # Add the search bar to the horizontal layout
-        self.ticker_manager.addWidget(self.search_bar)
 
-        # Add the ticker manager to the GUI
+        # GUI ELEMENT FOR MANAGING MEDIARIES
+        self.mediary_manager = QHBoxLayout()
+        self.mediary_manager.setSpacing(10)  # Space between the search bar and the stock label
+        self.mediary_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
+        # SEARCH for selecting the mediary
+        self.mediary_search_bar = QLineEdit(self)
+        self.mediary_search_bar.setPlaceholderText("Select Mediary...")
+        self.mediary_search_bar.setMaximumWidth(300)
+        # COMPLETER for selecting mediary
+        completer = QCompleter(self.mediary_list, self)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)  # Show all items when the search bar is empty
+        self.mediary_search_bar.setCompleter(completer)
+        # ICON for selecting mediary
+        search_icon = QIcon("src/assets/mediary-icon.svg")
+        self.mediary_search_bar.addAction(search_icon, QLineEdit.LeadingPosition)
+        self.mediary_manager.addWidget(self.mediary_search_bar)
+        # INPUT for key depending on whether you use an actual honest to god mediary (you will lose money)
+        self.mediary_key_input = QLineEdit(self)
+        self.mediary_key_input.setPlaceholderText("Key...")
+        self.mediary_key_input.setMaximumWidth(300)
+        search_icon = QIcon("src/assets/key-icon.svg")
+        self.mediary_key_input.addAction(search_icon, QLineEdit.LeadingPosition)
+        self.mediary_manager.addWidget(self.mediary_key_input)
+
+        # TODO GUI ELEMENT FOR MANAGING INTERVAL
+
+        # TODO GUI ELEMENT FOR MANAGING DATES
+
+
+        # Add each of the elements to the the windows main layout
         main_layout.addLayout(self.ticker_manager)
+        main_layout.addLayout(self.mediary_manager)
+        main_layout.addStretch()
+
 
         # Load stock data and set up the completer
         self.load_stock_data()
@@ -62,16 +97,16 @@ class MainWindow(QMainWindow):
             tickers = [f"{stock['ticker']} : {stock['name']}" for stock in data]
             completer = QCompleter(tickers, self)
             completer.setCaseSensitivity(Qt.CaseInsensitive)
-            self.search_bar.setCompleter(completer)
+            self.ticker_search_bar.setCompleter(completer)
 
-            self.search_bar.returnPressed.connect(self.add_ticker_to_list)
+            self.ticker_search_bar.returnPressed.connect(self.add_ticker_to_list)
 
         except FileNotFoundError:
-            self.search_bar.setPlaceholderText("stocks.json not found!")
+            self.ticker_search_bar.setPlaceholderText("stocks.json not found!")
 
     def add_ticker_to_list(self):
         """Add the selected ticker to the list and create a new stock shower."""
-        ticker = self.search_bar.text()
+        ticker = self.ticker_search_bar.text()
         if ticker and ticker not in self.ticker_list:
             self.ticker_list.append(ticker)
 
@@ -101,7 +136,7 @@ class MainWindow(QMainWindow):
             # Keep track of the widgets and tickers for removal
             self.ticker_widgets.append((stock_container, ticker))
 
-        self.search_bar.clear()
+        self.ticker_search_bar.clear()
 
     def remove_ticker(self, stock_container, ticker):
         """Remove the ticker from the list and the view."""
