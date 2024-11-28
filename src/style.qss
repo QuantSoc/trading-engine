@@ -1,0 +1,31 @@
+QMainWindow {
+    background-color: #181831;
+}
+
+QLabel {
+    color: #505077;
+    /* font-size: 24px; */
+    font-weight: bold;
+}
+
+QLineEdit {
+    padding: 0px 0px 0px 7px;  /* Adjust for the icon */
+    height: 30px;
+    border: none;
+    background-color: #21213B;
+    color: #505077;
+}
+
+QLineEdit::add-action {
+    margin-left: 5px;  /* Space between icon and text */
+}
+
+QListView {
+    background-color: #181831;
+    color: #505077;
+    border: none;
+}
+
+QHBoxLayout {
+    background-color: #181831;
+}
