@@ -48,8 +48,8 @@ QPushButton#stockItemDelete {
 
 QPushButton#stockItemDelete::hover {
     /* border-radius: 15px; */
-    background-color: red;
-    color: white;
+    background-color: green;
+    color: #121226;
 }
 
 QDateEdit {
@@ -64,7 +64,7 @@ QDateEdit {
 
 QDateEdit::drop-down {
     border: none;
-    padding-left: 5px;  /* Move dropdown left */
+    padding-left: 3px;  /* Move dropdown left */
     width: 20px;        /* Adjust width if necessary */
     subcontrol-position: left; /* Align dropdown on the left */
 }
@@ -73,13 +73,18 @@ QDateEdit::down-arrow {
     image: url("./src/assets/calendar-icon.svg");
     width: 16px;
     height: 16px;
-    margin-right: 7px;  /* Adds space for text padding */
+    padding-left: 3px;
 }
 
 QDateEdit::down-arrow:hover {
     image: url("./src/assets/calendar-icon-hover.svg");
     width: 16px;
     height: 16px;
+}
+
+QLabel#dateArrow {
+    font-size: 30px;
+    font-weight: 800;
 }
 
 
@@ -108,24 +113,27 @@ QPushButton#runEngineButton, QPushButton#stopEngineButton {
 }
 
 QPushButton#runEngineButton {
-    color: green;
+    color: #505077;
 }
 
 QPushButton#stopEngineButton {
-    color: red;
+    color:  #505077;
     padding-bottom: 10px;
 
 }
 
-QPushButton#runEngineButton::hover {
+QPushButton#runEngineButton::hover, QPushButton#stopEngineButton::hover{
     color: green;
-}
-
-QPushButton#stopEngineButton::hover {
-    color: red;
 }
 
 QLabel#programTitle {
     color: #505077;
-    font-size: 25px;
+    font-size: 30px;
+    font-weight: 900;
 }
+
+QLabel#programVer:hover {
+    color: green;
+}
+
+

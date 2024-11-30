@@ -3,17 +3,10 @@ import json
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCompleter, QLabel, QHBoxLayout, QPushButton, QDateEdit
 )
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QSize, QProcess
+from PyQt5.QtGui import QIcon, QDesktopServices
+from PyQt5.QtCore import Qt, QSize, QUrl
 
-from nodeeditor.node_editor_window import NodeEditorWindow
-
-
-class NodeEditorMainWindow(NodeEditorWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Node Editor")
-
+from nodewin import NodeEditorMainWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -38,18 +31,21 @@ class MainWindow(QMainWindow):
 
         ### TITLE AND RUN/STOP
         self.run_manager = QHBoxLayout(objectName="runManager")
-        # self.run_manager.setSpacing(0)
+        self.run_manager.setSpacing(0)
         self.run_manager.setContentsMargins(0, 0, 0, 0)  # (left, top, right, bottom)  # Space between the search bar and the stock label
         self.run_manager.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
-        title = QLabel("QUANTSOC <span style=''>≽ܫ≼</span> \
-                       TRADER <span style='font-size: 12px;'>v0.0.1</span>", objectName="programTitle")
-        play_button = QPushButton("▶", objectName="runEngineButton", toolTip="Start")
+        title = QLabel("QUANTSOC ≽ܫ≼ TRADER", objectName="programTitle")
+        version_subtext = QLabel("v0.0.1", objectName="programVer")
+        def open_github(event):
+            QDesktopServices.openUrl(QUrl("https://github.com/QuantSoc/trading-engine"))
+        version_subtext.mousePressEvent = open_github
+        play_button = QPushButton("▶ ", objectName="runEngineButton", toolTip="Start")
         stop_button = QPushButton("■", objectName="stopEngineButton", toolTip="Stop")   
         self.run_manager.addWidget(title, alignment=Qt.AlignmentFlag.AlignLeft)
+        self.run_manager.addWidget(version_subtext, alignment=Qt.AlignmentFlag.AlignLeft)
         self.run_manager.addStretch()
         self.run_manager.addWidget(play_button)
         self.run_manager.addWidget(stop_button)
-
 
 
         ### GUI ELEMENT FOR MANAGING TICKERS
@@ -94,16 +90,17 @@ class MainWindow(QMainWindow):
         self.mediary_manager.addWidget(self.mediary_key_input)
 
 
-
         ### GUI ELEMENT FOR MANAGING DATES
         self.time_manager = QHBoxLayout()
         self.time_manager.setSpacing(10)  # Space between the search bar and the stock label
         self.time_manager.setAlignment(Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignTop)
         starting_date = QDateEdit(calendarPopup=True)
-        starting_date.setMaximumWidth(200)
-        date_arrow = QLabel("🠊")
+        starting_date.setAlignment(Qt.AlignCenter)  # Aligns text horizontally in the input field
+        starting_date.setMinimumWidth(90)
+        date_arrow = QLabel("↦", objectName="dateArrow")
         ending_date = QDateEdit(calendarPopup=True)
-        ending_date.setMaximumWidth(200)
+        ending_date.setAlignment(Qt.AlignCenter)  # Aligns text horizontally in the input field
+        ending_date.setMinimumWidth(90)
         self.time_manager.addWidget(starting_date)
         self.time_manager.addWidget(date_arrow)
         self.time_manager.addWidget(ending_date)
